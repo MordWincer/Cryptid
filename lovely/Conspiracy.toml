@@ -1,0 +1,27 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+# Display changed max select for Tarot cards
+[[patches]]
+[patches.regex]
+target = "functions/common_events.lua"
+pattern = '''elseif _c.set == 'Tarot' then'''
+position = 'after'
+payload = '''
+
+old_max_highlighted = _c.config.max_highlighted
+_c.config.max_highlighted = (old_max_highlighted or 0) + G.GAME.modifiers.cry_tarot_consumable_increase
+'''
+
+# Revert max highlighted back
+[[patches]]
+[patches.regex]
+target = "functions/common_events.lua"
+pattern = '''elseif _c.name == "The World" then loc_vars = \{_c.config.max_highlighted, localize\(_c.config.suit_conv, 'suits_plural'\), colours = \{G.C.SUITS\[_c.config.suit_conv\]\}\}\n\s+end'''
+position = 'after'
+payload = '''
+
+_c.config.max_highlighted = old_max_highlighted
+'''

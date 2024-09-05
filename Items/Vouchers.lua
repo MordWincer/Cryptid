@@ -528,6 +528,29 @@ local quintuple = { --Clone machine voucher quintuple tag
         return G.GAME.used_vouchers.v_cry_clone_machine
     end
 }
+local conspiracy = {
+    object_type = "Voucher",
+    key = "conspiracy",
+    config = {num = 1},
+    atlas = "atlasvoucher",
+    pos = {x = 2, y = 0},
+    loc_txt = {
+        name = 'Conspiracy',
+        text = {
+            "Tarot cards can now",
+            "target up to {C:attention}#1#{}",
+            "additional card",
+        }
+    },
+    loc_vars = function(self, info_queue)
+        return {vars = {self.config.num}}
+    end,
+    redeem = function(self)
+        G.E_MANAGER:add_event(Event({func = function()
+            G.GAME.modifiers.cry_tarot_consumable_increase = (G.GAME.modifiers.cry_tarot_consumable_increase or 0) + self.config.num
+            return true end }))
+    end
+}
 
 -- If Tier 3 Vouchers is loaded, make Cryptid function as Tier 4 Vouchers
 if SMODS.Mods["Tier3Sub"] then
@@ -546,7 +569,7 @@ if SMODS.Mods["Tier3Sub"] then
     tacclimator.config.extra = tacclimator.config.extra * 8
     pacclimator.config.extra = pacclimator.config.extra * 8
 end
-local voucheritems = {voucher_atlas, copies, tag_printer, triple, quadruple, quintuple, overstock_multi, massproduct, curate, rerollexchange, dexterity, threers, tacclimator, pacclimator, moneybean, fabric, asteroglyph, blankcanvas, clone_machine,}
+local voucheritems = {voucher_atlas, copies, tag_printer, triple, quadruple, quintuple, overstock_multi, massproduct, curate, rerollexchange, dexterity, threers, tacclimator, pacclimator, moneybean, fabric, asteroglyph, blankcanvas, clone_machine, conspiracy,}
 if Cryptid_config["Code Cards"] then --tweak this later since I want command prompt/satellite uplink in the same space as the other vouchers
     voucheritems[#voucheritems+1] = command_prompt
     voucheritems[#voucheritems+1] = satellite_uplink
